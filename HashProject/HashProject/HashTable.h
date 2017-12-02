@@ -9,6 +9,8 @@ public:
 	~HashTable();
 	int Hash(std::string key);
 	void AddItem(int ra, std::string name);
+	int NumberOfItems(int index);
+	void PrintTable();
 
 private:
 	static const int tableSize = 10; 
@@ -18,6 +20,6 @@ private:
 		item* next;
 	};
 
-	std::list<item*> hashTable[tableSize];
+	item* hashTable[tableSize];
 };
 
