@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "HashTable.h"
 #include <iostream>
+#include <string>
 using std::list;
 using std::cout;
 using std::endl;
+using std::string;
 
 
 HashTable::HashTable()
@@ -16,7 +18,7 @@ HashTable::HashTable()
 	}
 }
 
-void HashTable::AddItem(int ra, std::string name) {
+void HashTable::AddItem(int ra, string name) {
 	int index = Hash(name);
 	bool encontrou = false;
 
@@ -31,16 +33,31 @@ void HashTable::AddItem(int ra, std::string name) {
 		*auxiliar = &a;
 	}
 	else {
-		if ((*auxiliar)->name == a.name && (*auxiliar)->ra == a.ra) {
-			// já existe
-			encontrou = true;
+		if ((*auxiliar)->name == a.name) {
+			if ((*auxiliar)->ra != a.ra) {
+				(*(*auxiliar)).next = new item();
+				(*(*auxiliar)).next->name = name;
+				(*(*auxiliar)).next->ra = ra;
+				(*(*auxiliar)).next->next = nullptr;
+			}
+			else {
+				// ras iguais >>>>>>> já existe
+				encontrou = true;
+			}
 		}
 		else{
 			while ((*auxiliar)->next != nullptr) {
-				if ((*auxiliar)->name == a.name && (*auxiliar)->ra == a.ra) {
-					// já existe
-					encontrou = true;
-					break;
+				if ((*auxiliar)->name == a.name){
+					if ((*auxiliar)->ra != a.ra) {
+						(*(*auxiliar)).next = new item();
+						(*(*auxiliar)).next->name = name;
+						(*(*auxiliar)).next->ra = ra;
+						(*(*auxiliar)).next->next = nullptr;
+					}
+					else {
+						// ras iguais >>>>>>> já existe
+						encontrou = true;
+					}
 				}
 				else {
 					auxiliar = &(*auxiliar)->next;
@@ -54,6 +71,80 @@ void HashTable::AddItem(int ra, std::string name) {
 				}
 				else
 					(*auxiliar)->next = &a;
+
+				cout << "Item incluído com sucesso!\n" << endl;
+			}
+		}
+
+		if (encontrou) {
+			cout << "Esse elemento já existe!\n" << endl;
+		}
+	}
+}
+
+void HashTable::DeleteItem(int ra)
+{
+	int number;
+	item* aux;
+	/*ESTAVA MEXENDO AQUIIIIIIIIIII*/
+	for (int i = 0; i < tableSize; i++) {
+		number = NumberOfItems(i);
+		aux = hashTable[i];
+		if (aux->ra == ra) {
+			if (aux->next != nullptr) {
+				aux = aux->next;
+			}
+		}
+		else {
+			for (int j = 0; j < number; j++) {
+				if (aux->next != nullptr) {
+					if (aux->next->ra == ra) {
+						//encontrou
+						aux->next = aux->next->next;
+					}
+					else {
+						aux = aux->next;
+					}
+				}
+			}
+		}
+	}
+	
+}
+
+HashTable::item* HashTable::Search(int ra)
+{
+	int number;
+	item* aux;
+	for (int i = 0; i < tableSize; i++) {
+		number = NumberOfItems(i);
+		aux = hashTable[i];
+		for (int j = 0; j < number; j++) {
+			if (aux->ra == ra) {
+				//encontrou
+				return aux;
+			}
+			else {
+				aux = aux->next;
+			}
+		}
+	}
+}
+
+HashTable::item* HashTable::Search(string name)
+{
+	int number;
+	item* aux;
+	for (int i = 0; i < tableSize; i++) {
+		number = NumberOfItems(i);
+		aux = hashTable[i];
+		for (int j = 0; j < number; j++) {
+			if (aux->name == name) {
+				//encontrou
+				return aux;
+			}
+			else {
+				aux = aux->next;
 			}
 		}
 	}
@@ -69,7 +160,7 @@ int HashTable::NumberOfItems(int index)
 	else {
 		count++;
 
-		for (count = count; (*auxiliar)->next != nullptr; count++) { // AQUI Q É O PROBLEMA
+		for (count = count; (*auxiliar)->next != nullptr; count++) { // AQUI Q É O PROBLEMA                                                
 			auxiliar = &(*auxiliar)->next;
 		}
 
@@ -80,25 +171,31 @@ int HashTable::NumberOfItems(int index)
 void HashTable::PrintTable()
 {
 	int number;
+	item* aux;
+
 	for (int i = 0; i < tableSize; i++) {
 		number = NumberOfItems(i);
 		cout << "-------------------" << endl;
 		cout << "index = " << i << endl;
 		cout << "# of items = " << number << endl;
 		cout << "-------------------" << endl;
+
+		aux = hashTable[i];
 		for (int j = 0; j < number; j++) {
+			cout << "ra = " << aux->ra << endl;
+			cout << "name = " << aux->name << endl;
 			cout << "-------------------" << endl;
-			cout << "ra = " << hashTable[i]->ra << endl;
-			cout << "name = " << hashTable[i]->name << endl;
+			aux = aux->next;
 		}
 	}
+	cout << "\n" << endl;
 }
 
 HashTable::~HashTable()
 {
 }
 
-int HashTable::Hash(std::string key) {
+int HashTable::Hash(string key) {
 	int hash = 0, index;
 
 	for (int i = 0; i < key.length(); i++)

@@ -22,7 +22,7 @@ void inserir() {
 
 	cout << "Digite o ra que deseja inserir: ";
 	cin >> ra;
-	cout << "\n";
+	cout << endl;
 	cout << "Digite o nome que deseja inserir: ";
 	cin >> name;
 	cout << "\n";
