@@ -6,6 +6,8 @@ using std::string;
 class HashTable
 {
 private:
+	int size = 10;
+	/*COMO VOU AUMENTAR A HASHTABLE?*/
 	static const int tableSize = 10;
 	struct item {
 		int ra;
@@ -18,13 +20,13 @@ private:
 public:
 	HashTable();
 	~HashTable();
-	int Hash(string key);
+	int Hash(int key);
 	void AddItem(int ra, string name);
 	void DeleteItem(int ra);
-	void DeleteItem(string name);
 	item* Search(int ra);
 	item* Search(string name);
 	int NumberOfItems(int index);
 	void PrintTable();
+	int TotalOfPositionsUsed();
 };
 

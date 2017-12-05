@@ -9,6 +9,7 @@ using std::cin;
 using std::cout;
 using std::endl;
 using std::string;
+using std::stoi;
 
 HashTable tabela;
 
@@ -31,7 +32,11 @@ void inserir() {
 }
 
 void excluir() {
-
+	int ra;
+	cout << "Digite o RA que deseja excluir: ";
+	cin >> ra;
+	cout << "\n";
+	tabela.DeleteItem(ra);
 }
 
 int main()

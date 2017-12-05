@@ -19,61 +19,43 @@ HashTable::HashTable()
 }
 
 void HashTable::AddItem(int ra, string name) {
-	int index = Hash(name);
+	int index = Hash(ra);
 	bool encontrou = false;
-
 	item** auxiliar = &hashTable[index];
 
-	item a = *new item();
-	a.name = name;
-	a.ra = ra;
-	a.next = nullptr;	
+	if (hashTable[index]->ra != 0) {
+		if (TotalOfPositionsUsed() >= 0.6 * tableSize)
+			tableSize += 0.5*tableSize;
+	}
 
-	if (auxiliar == nullptr) {
-		*auxiliar = &a;
+	if ((*auxiliar) == nullptr) {
+		(*(*auxiliar)) = *new item();
+		(*(*auxiliar)).name = name;
+		(*(*auxiliar)).ra = ra;
+		(*(*auxiliar)).next = nullptr;
 	}
 	else {
-		if ((*auxiliar)->name == a.name) {
-			if ((*auxiliar)->ra != a.ra) {
+		if ((*auxiliar)->ra == ra) {
+			encontrou = true;
+		} else {
+			while ((*auxiliar)->next != nullptr) {
+				auxiliar = &(*auxiliar)->next;
+			}
+		}
+			
+		if (!encontrou) {
+			if ((*(*auxiliar)).name == "empty") {
+				(*(*auxiliar)).name = name;
+				(*(*auxiliar)).ra = ra;
+			}
+			else {
 				(*(*auxiliar)).next = new item();
 				(*(*auxiliar)).next->name = name;
 				(*(*auxiliar)).next->ra = ra;
 				(*(*auxiliar)).next->next = nullptr;
 			}
-			else {
-				// ras iguais >>>>>>> já existe
-				encontrou = true;
-			}
-		}
-		else{
-			while ((*auxiliar)->next != nullptr) {
-				if ((*auxiliar)->name == a.name){
-					if ((*auxiliar)->ra != a.ra) {
-						(*(*auxiliar)).next = new item();
-						(*(*auxiliar)).next->name = name;
-						(*(*auxiliar)).next->ra = ra;
-						(*(*auxiliar)).next->next = nullptr;
-					}
-					else {
-						// ras iguais >>>>>>> já existe
-						encontrou = true;
-					}
-				}
-				else {
-					auxiliar = &(*auxiliar)->next;
-				}
-			}
 
-			if (!encontrou) {
-				if ((*auxiliar)->name == "empty") {
-					(*auxiliar)->name = a.name;
-					(*auxiliar)->ra = a.ra;
-				}
-				else
-					(*auxiliar)->next = &a;
-
-				cout << "Item incluído com sucesso!\n" << endl;
-			}
+			cout << "Item incluído com sucesso!\n" << endl;
 		}
 
 		if (encontrou) {
@@ -85,31 +67,43 @@ void HashTable::AddItem(int ra, string name) {
 void HashTable::DeleteItem(int ra)
 {
 	int number;
-	item* aux;
-	/*ESTAVA MEXENDO AQUIIIIIIIIIII*/
+	item** aux;
+	bool encontrou = false;
+
 	for (int i = 0; i < tableSize; i++) {
 		number = NumberOfItems(i);
-		aux = hashTable[i];
-		if (aux->ra == ra) {
-			if (aux->next != nullptr) {
-				aux = aux->next;
+		aux = &hashTable[i];
+		if ((*aux)->ra == ra) {
+			if ((*(*aux)).next == nullptr) {
+				(*(*aux)).name = "empty";
+				(*(*aux)).ra = 0;
 			}
+			else
+				(*aux) = (*(*aux)).next;
+			cout << "Item excluído com sucesso!\n" << endl;
+			encontrou = true;
 		}
 		else {
 			for (int j = 0; j < number; j++) {
-				if (aux->next != nullptr) {
-					if (aux->next->ra == ra) {
+				if ((*aux)->next != nullptr) {
+					if ((*aux)->next->ra == ra) {
 						//encontrou
-						aux->next = aux->next->next;
+						(*(*aux)).next = (*(*aux)).next->next;
+
+						cout << "Item excluído com sucesso!\n" << endl;
+						encontrou = true;
 					}
 					else {
-						aux = aux->next;
+						aux = &(*aux)->next;
 					}
+				}
+
+				if (encontrou) {
+					break;
 				}
 			}
 		}
 	}
-	
 }
 
 HashTable::item* HashTable::Search(int ra)
@@ -154,17 +148,22 @@ int HashTable::NumberOfItems(int index)
 {
 	item** auxiliar = &hashTable[index];
 	int count = 0;
-	if ((*auxiliar)->name == "empty") {
-		return count;
+	if ((*auxiliar) != nullptr) {
+		if ((*auxiliar)->name == "empty") {
+			return count;
+		}
+		else {
+			count++;
+
+			for (count = count; (*auxiliar)->next != nullptr; count++) { // AQUI Q É O PROBLEMA                                                
+				auxiliar = &(*auxiliar)->next;
+			}
+
+			return count;
+		}
 	}
 	else {
-		count++;
-
-		for (count = count; (*auxiliar)->next != nullptr; count++) { // AQUI Q É O PROBLEMA                                                
-			auxiliar = &(*auxiliar)->next;
-		}
-
-		return count;
+		return 0;
 	}
 }
 
@@ -191,20 +190,33 @@ void HashTable::PrintTable()
 	cout << "\n" << endl;
 }
 
+int HashTable::TotalOfPositionsUsed()
+{
+	int count = 0;
+	for (int i = 0; i < tableSize; i++) {
+		if (hashTable[i] != nullptr) {
+			if (hashTable[i]->ra != 0)
+				count++;
+		}
+	}
+	
+	return count;
+}
+
 HashTable::~HashTable()
 {
 }
 
-int HashTable::Hash(string key) {
+int HashTable::Hash(int key) {
 	int hash = 0, index;
 
-	for (int i = 0; i < key.length(); i++)
+	/*for (int i = 0; i < key.length(); i++)
 	{
 		hash += (int)key[i];
 		//cout << "hash = " << hash << endl;
-	}
+	}*/
 
-	index = hash % tableSize;
+	index = key % tableSize;
 	/* we divide the hashCode for the tableSize and the reminder is the index*/
 
 	return index;
