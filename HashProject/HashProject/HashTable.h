@@ -8,7 +8,7 @@ class HashTable
 private:
 	int size = 10;
 	/*COMO VOU AUMENTAR A HASHTABLE?*/
-	static const int tableSize = 10;
+	static const int tableSize = 20;
 	struct item {
 		int ra;
 		std::string name;
@@ -20,11 +20,10 @@ private:
 public:
 	HashTable();
 	~HashTable();
-	int Hash(int key);
+	int Hash(string key);
 	void AddItem(int ra, string name);
 	void DeleteItem(int ra);
 	item* Search(int ra);
-	item* Search(string name);
 	int NumberOfItems(int index);
 	void PrintTable();
 	int TotalOfPositionsUsed();

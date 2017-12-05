@@ -1,5 +1,10 @@
-﻿  HashTable.cpp
-c:\users\u15173\desktop\hashtable\hashproject\hashproject\hashtable.cpp(123): warning C4715: 'HashTable::Search': not all control paths return a value
-c:\users\u15173\desktop\hashtable\hashproject\hashproject\hashtable.cpp(142): warning C4715: 'HashTable::Search': not all control paths return a value
+﻿  HashProject.cpp
+  Generating Code...
+  Compiling...
+  HashTable.cpp
+c:\users\u15173\desktop\hashtable\hashproject\hashproject\hashtable.cpp(214): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
+c:\users\u15173\desktop\hashtable\hashproject\hashproject\hashtable.cpp(127): warning C4715: 'HashTable::Search': not all control paths return a value
+c:\users\u15173\desktop\hashtable\hashproject\hashproject\hashtable.cpp(146): warning C4715: 'HashTable::Search': not all control paths return a value
   HashProject.vcxproj -> C:\Users\u15173\Desktop\HashTable\HashProject\Debug\HashProject.exe
   HashProject.vcxproj -> C:\Users\u15173\Desktop\HashTable\HashProject\Debug\HashProject.pdb (Full PDB)

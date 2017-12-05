@@ -6,6 +6,7 @@ using std::list;
 using std::cout;
 using std::endl;
 using std::string;
+using std::to_string;
 
 
 HashTable::HashTable()
@@ -19,14 +20,16 @@ HashTable::HashTable()
 }
 
 void HashTable::AddItem(int ra, string name) {
-	int index = Hash(ra);
+	int index = Hash(to_string(ra));
 	bool encontrou = false;
 	item** auxiliar = &hashTable[index];
 
-	if (hashTable[index]->ra != 0) {
-		if (TotalOfPositionsUsed() >= 0.6 * tableSize)
-			tableSize += 0.5*tableSize;
-	}
+	//if (hashTable[index]->ra != 0) {
+		//if (TotalOfPositionsUsed() >= 0.6 * tableSize)
+			//tableSize += 0.5*tableSize;
+	//}
+
+	/* for resizing: http://www.algolist.net/Data_structures/Hash_table/Dynamic_resizing */
 
 	if ((*auxiliar) == nullptr) {
 		(*(*auxiliar)) = *new item();
@@ -125,25 +128,6 @@ HashTable::item* HashTable::Search(int ra)
 	}
 }
 
-HashTable::item* HashTable::Search(string name)
-{
-	int number;
-	item* aux;
-	for (int i = 0; i < tableSize; i++) {
-		number = NumberOfItems(i);
-		aux = hashTable[i];
-		for (int j = 0; j < number; j++) {
-			if (aux->name == name) {
-				//encontrou
-				return aux;
-			}
-			else {
-				aux = aux->next;
-			}
-		}
-	}
-}
-
 int HashTable::NumberOfItems(int index)
 {
 	item** auxiliar = &hashTable[index];
@@ -207,16 +191,16 @@ HashTable::~HashTable()
 {
 }
 
-int HashTable::Hash(int key) {
+int HashTable::Hash(string key) {
 	int hash = 0, index;
 
-	/*for (int i = 0; i < key.length(); i++)
+	for (int i = 0; i < key.length(); i++)
 	{
-		hash += (int)key[i];
+		hash = (hash + (int)key[i]) * 17;
 		//cout << "hash = " << hash << endl;
-	}*/
+	}
 
-	index = key % tableSize;
+	index = hash % tableSize;
 	/* we divide the hashCode for the tableSize and the reminder is the index*/
 
 	return index;
