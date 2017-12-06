@@ -6,16 +6,16 @@ using std::string;
 class HashTable
 {
 private:
-	int size = 10;
-	/*COMO VOU AUMENTAR A HASHTABLE?*/
-	static const int tableSize = 20;
+	float threshold;
+	int maxSize, size, tableSize;
 	struct item {
 		int ra;
 		std::string name;
 		item* next;
 	};
 
-	item* hashTable[tableSize];
+	item** hashTable;
+	void resize();
 
 public:
 	HashTable();

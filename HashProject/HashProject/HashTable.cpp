@@ -11,6 +11,12 @@ using std::to_string;
 
 HashTable::HashTable()
 {
+	threshold = 0.75f;
+	maxSize = 96;
+	tableSize = 20;
+	size = 0;
+	hashTable = new item*[tableSize];
+
 	for (int i = 0; i < tableSize; i++) {
 		hashTable[i] = new item;
 		hashTable[i]->name = "empty";
@@ -185,6 +191,34 @@ int HashTable::TotalOfPositionsUsed()
 	}
 	
 	return count;
+}
+
+void HashTable::resize(){
+	int oldTableSize = tableSize;
+	tableSize *= 2;
+	maxSize = (int)(tableSize * threshold);
+	item **oldTable = hashTable;
+	hashTable = new item*[tableSize];
+	
+	for (int i = 0; i < tableSize; i++) {
+		hashTable[i] = nullptr;
+	}
+
+	size = 0;
+
+	for (int h = 0; h < oldTableSize; h++)
+		if (oldTable[h] != nullptr) {
+			item *oldEntry;
+			item *entry = oldTable[h];
+			while (entry != nullptr) {
+				AddItem(entry->ra, entry->name);
+				oldEntry = entry;
+				entry = entry->next;
+				delete oldEntry;
+			}
+		}
+
+	delete[] oldTable;
 }
 
 HashTable::~HashTable()
