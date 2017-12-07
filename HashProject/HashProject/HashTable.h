@@ -20,10 +20,12 @@ private:
 public:
 	HashTable();
 	~HashTable();
+	int getSize();
 	int Hash(string key);
 	void AddItem(int ra, string name);
 	void DeleteItem(int ra);
 	item* Search(int ra);
+	bool Exist(int ra);
 	int NumberOfItems(int index);
 	void PrintTable();
 	int TotalOfPositionsUsed();

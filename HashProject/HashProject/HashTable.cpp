@@ -31,6 +31,9 @@ void HashTable::AddItem(int ra, string name) {
 		return;
 	}
 
+	if (TotalOfPositionsUsed() + 1 >= 0.5 * tableSize)
+		resize();
+
 	int index = Hash(to_string(ra));
 	bool encontrou = false;
 	item** auxiliar = &hashTable[index];
@@ -39,9 +42,6 @@ void HashTable::AddItem(int ra, string name) {
 		//if (TotalOfPositionsUsed() >= 0.6 * tableSize)
 			//tableSize += 0.5*tableSize;
 	//}
-
-	if (TotalOfPositionsUsed() >= 0.5 * tableSize)
-		resize();
 
 	/* for resizing: http://www.algolist.net/Data_structures/Hash_table/Dynamic_resizing */
 
@@ -72,11 +72,11 @@ void HashTable::AddItem(int ra, string name) {
 				(*(*auxiliar)).next->next = nullptr;
 			}
 
-			cout << "Item incluído com sucesso!\n" << endl;
+//			cout << "Item incluído com sucesso!\n" << endl;
 		}
 
 		if (encontrou) {
-			cout << "Esse elemento já existe!\n" << endl;
+			//cout << "Esse elemento já existe!\n" << endl;
 		}
 	}
 }
@@ -102,7 +102,7 @@ void HashTable::DeleteItem(int ra)
 			}
 			else
 				(*aux) = (*(*aux)).next;
-			cout << "Item excluído com sucesso!\n" << endl;
+			//cout << "Item excluído com sucesso!\n" << endl;
 			encontrou = true;
 		}
 		else {
@@ -112,7 +112,7 @@ void HashTable::DeleteItem(int ra)
 						//encontrou
 						(*(*aux)).next = (*(*aux)).next->next;
 
-						cout << "Item excluído com sucesso!\n" << endl;
+						//cout << "Item excluído com sucesso!\n" << endl;
 						encontrou = true;
 					}
 					else {
@@ -128,7 +128,7 @@ void HashTable::DeleteItem(int ra)
 	}
 
 	if (!encontrou) {
-		cout << "Esse item não existe!\n" << endl;
+//		cout << "Esse item não existe!\n" << endl;
 	}
 }
 
@@ -149,6 +149,27 @@ HashTable::item* HashTable::Search(int ra)
 			}
 		}
 	}
+}
+
+bool HashTable::Exist(int ra)
+{
+	int number;
+	item* aux;
+	for (int i = 0; i < tableSize; i++) {
+		number = NumberOfItems(i);
+		aux = hashTable[i];
+		for (int j = 0; j < number; j++) {
+			if (aux->ra == ra) {
+				//encontrou
+				return true;
+			}
+			else {
+				aux = aux->next;
+			}
+		}
+	}
+
+	return false;
 }
 
 int HashTable::NumberOfItems(int index)
@@ -212,13 +233,21 @@ int HashTable::TotalOfPositionsUsed()
 
 void HashTable::resize(){
 	int oldTableSize = tableSize;
-	tableSize *= 1.5;
+	tableSize = std::round(tableSize*1.5);
 	maxSize = (int)(tableSize * threshold);
-	item **oldTable = hashTable;
+	item** oldTable = new item*[oldTableSize];
+	
+	for (int j = 0; j < oldTableSize; j++) {
+		oldTable[j] = hashTable[j];
+	}
+
 	hashTable = new item*[tableSize];
 	
 	for (int i = 0; i < tableSize; i++) {
-		hashTable[i] = nullptr;
+		hashTable[i] = new item;
+		hashTable[i]->name = "empty";
+		hashTable[i]->ra = 0;
+		hashTable[i]->next = nullptr;
 	}
 
 	size = 0;
@@ -227,7 +256,7 @@ void HashTable::resize(){
 		if (oldTable[h] != nullptr) {
 			item *oldEntry;
 			item *entry = oldTable[h];
-			while (entry != nullptr) {
+			while (entry != nullptr && entry->ra != 0) {
 				AddItem(entry->ra, entry->name);
 				oldEntry = entry;
 				entry = entry->next;
@@ -240,6 +269,11 @@ void HashTable::resize(){
 
 HashTable::~HashTable()
 {
+}
+
+int HashTable::getSize()
+{
+	return tableSize;
 }
 
 int HashTable::Hash(string key) {

@@ -1,7 +1,8 @@
-﻿cl : Command line warning D9028: minimal rebuild failure, reverting to normal build
-  HashTable.cpp
-c:\users\u15173\desktop\hashtable\hashproject\hashproject\hashtable.cpp(215): warning C4244: '*=': conversion from 'double' to 'int', possible loss of data
-c:\users\u15173\desktop\hashtable\hashproject\hashproject\hashtable.cpp(248): warning C4018: '<': signed/unsigned mismatch
+﻿  HashTable.cpp
+c:\users\u15173\desktop\hashtable\hashproject\hashproject\hashtable.cpp(236): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+c:\users\u15173\desktop\hashtable\hashproject\hashproject\hashtable.cpp(282): warning C4018: '<': signed/unsigned mismatch
+  HashProject.cpp
+  Generating Code...
 c:\users\u15173\desktop\hashtable\hashproject\hashproject\hashtable.cpp(152): warning C4715: 'HashTable::Search': not all control paths return a value
   HashProject.vcxproj -> C:\Users\u15173\Desktop\HashTable\HashProject\Debug\HashProject.exe
   HashProject.vcxproj -> C:\Users\u15173\Desktop\HashTable\HashProject\Debug\HashProject.pdb (Full PDB)
