@@ -15,7 +15,7 @@ private:
 	};
 
 	item** hashTable;
-	void resize();
+	void resize(bool crescimento);
 
 public:
 	HashTable();

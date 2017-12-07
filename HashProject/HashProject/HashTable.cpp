@@ -31,17 +31,12 @@ void HashTable::AddItem(int ra, string name) {
 		return;
 	}
 
-	if (TotalOfPositionsUsed() + 1 >= 0.5 * tableSize)
-		resize();
+	if (TotalOfPositionsUsed() >= 0.5 * tableSize)
+		resize(true);
 
 	int index = Hash(to_string(ra));
 	bool encontrou = false;
 	item** auxiliar = &hashTable[index];
-
-	//if (hashTable[index]->ra != 0) {
-		//if (TotalOfPositionsUsed() >= 0.6 * tableSize)
-			//tableSize += 0.5*tableSize;
-	//}
 
 	/* for resizing: http://www.algolist.net/Data_structures/Hash_table/Dynamic_resizing */
 
@@ -71,12 +66,6 @@ void HashTable::AddItem(int ra, string name) {
 				(*(*auxiliar)).next->ra = ra;
 				(*(*auxiliar)).next->next = nullptr;
 			}
-
-//			cout << "Item incluído com sucesso!\n" << endl;
-		}
-
-		if (encontrou) {
-			//cout << "Esse elemento já existe!\n" << endl;
 		}
 	}
 }
@@ -91,6 +80,9 @@ void HashTable::DeleteItem(int ra)
 		cout << "RA inválido!\n" << endl;
 		return;
 	}
+
+	if (TotalOfPositionsUsed() <= 0.5 * tableSize)
+		resize(false);
 
 	for (int i = 0; i < tableSize; i++) {
 		number = NumberOfItems(i);
@@ -126,19 +118,17 @@ void HashTable::DeleteItem(int ra)
 			}
 		}
 	}
-
-	if (!encontrou) {
-//		cout << "Esse item não existe!\n" << endl;
-	}
 }
 
 HashTable::item* HashTable::Search(int ra)
 {
 	int number;
 	item* aux;
+
 	for (int i = 0; i < tableSize; i++) {
 		number = NumberOfItems(i);
 		aux = hashTable[i];
+		
 		for (int j = 0; j < number; j++) {
 			if (aux->ra == ra) {
 				//encontrou
@@ -148,6 +138,7 @@ HashTable::item* HashTable::Search(int ra)
 				aux = aux->next;
 			}
 		}
+
 	}
 }
 
@@ -231,9 +222,13 @@ int HashTable::TotalOfPositionsUsed()
 	return count;
 }
 
-void HashTable::resize(){
+void HashTable::resize(bool crescimento){
 	int oldTableSize = tableSize;
-	tableSize = std::round(tableSize*1.5);
+	if (crescimento)
+		tableSize = std::round(tableSize*1.5);
+	else
+		tableSize = std::round(tableSize*0.75);
+
 	maxSize = (int)(tableSize * threshold);
 	item** oldTable = new item*[oldTableSize];
 	
