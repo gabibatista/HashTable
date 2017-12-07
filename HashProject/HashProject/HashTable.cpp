@@ -13,7 +13,7 @@ HashTable::HashTable()
 {
 	threshold = 0.75f;
 	maxSize = 96;
-	tableSize = 20;
+	tableSize = 5;
 	size = 0;
 	hashTable = new item*[tableSize];
 
@@ -26,6 +26,11 @@ HashTable::HashTable()
 }
 
 void HashTable::AddItem(int ra, string name) {
+	if (ra < 0) {
+		cout << "RA inválido!\n" << endl;
+		return;
+	}
+
 	int index = Hash(to_string(ra));
 	bool encontrou = false;
 	item** auxiliar = &hashTable[index];
@@ -34,6 +39,9 @@ void HashTable::AddItem(int ra, string name) {
 		//if (TotalOfPositionsUsed() >= 0.6 * tableSize)
 			//tableSize += 0.5*tableSize;
 	//}
+
+	if (TotalOfPositionsUsed() >= 0.5 * tableSize)
+		resize();
 
 	/* for resizing: http://www.algolist.net/Data_structures/Hash_table/Dynamic_resizing */
 
@@ -79,6 +87,11 @@ void HashTable::DeleteItem(int ra)
 	item** aux;
 	bool encontrou = false;
 
+	if (ra < 0) {
+		cout << "RA inválido!\n" << endl;
+		return;
+	}
+
 	for (int i = 0; i < tableSize; i++) {
 		number = NumberOfItems(i);
 		aux = &hashTable[i];
@@ -112,6 +125,10 @@ void HashTable::DeleteItem(int ra)
 				}
 			}
 		}
+	}
+
+	if (!encontrou) {
+		cout << "Esse item não existe!\n" << endl;
 	}
 }
 
@@ -195,7 +212,7 @@ int HashTable::TotalOfPositionsUsed()
 
 void HashTable::resize(){
 	int oldTableSize = tableSize;
-	tableSize *= 2;
+	tableSize *= 1.5;
 	maxSize = (int)(tableSize * threshold);
 	item **oldTable = hashTable;
 	hashTable = new item*[tableSize];
